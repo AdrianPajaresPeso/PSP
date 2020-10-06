@@ -1,3 +1,4 @@
+import java.util.HashMap;
 
 public class Principal {
 
@@ -14,7 +15,12 @@ public class Principal {
 		
 		Ejercicio4 e4 = new Ejercicio4();
 //		System.out.println(e4.obtenerValorParametroStreams("Twitch", "listaParametros.properties"));
-		System.out.println(e4.obtenerValorParametroProperties("saludo", "listaParametros.properties"));
+//		System.out.println(e4.obtenerValorParametroProperties("saludo", "listaParametros.properties"));
+		
+		Ejercicio5 e5 = new Ejercicio5();
+		e5.menu();
+		
+		
 	}
 
 }
