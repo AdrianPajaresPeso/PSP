@@ -10,7 +10,11 @@ public class Principal {
 //		e2.copiarFichero("datos.txt");
 		
 		Ejercicio3 e3 = new Ejercicio3();
-		e3.listDirectory("C:/");
+//		e3.listDirectory("C:/");
+		
+		Ejercicio4 e4 = new Ejercicio4();
+//		System.out.println(e4.obtenerValorParametroStreams("Twitch", "listaParametros.properties"));
+		System.out.println(e4.obtenerValorParametroProperties("saludo", "listaParametros.properties"));
 	}
 
 }
