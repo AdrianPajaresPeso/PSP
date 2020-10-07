@@ -18,7 +18,10 @@ public class Principal {
 //		System.out.println(e4.obtenerValorParametroProperties("saludo", "listaParametros.properties"));
 		
 		Ejercicio5 e5 = new Ejercicio5();
-		e5.menu();
+//		e5.menu();
+		
+		Ejercicio6 e6 = new Ejercicio6();
+		e6.menu6("/Users/Adrian/Desktop/Juegos");
 		
 		
 	}
