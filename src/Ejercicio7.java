@@ -1,12 +1,15 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Ejercicio7 {
 	public void menu7() {
@@ -19,9 +22,11 @@ public class Ejercicio7 {
 				option1(sc);
 
 			} else if (input == 2) {
-				option2();
+				option2(sc);
+
 			} else if (input == 3) {
 				option3();
+
 			} else {
 				break;
 			}
@@ -31,7 +36,7 @@ public class Ejercicio7 {
 
 	/**
 	 * Lista el contenido de un fichero zip
-	 * */
+	 */
 	private void option1(Scanner sc) {
 		sc.nextLine();// limpiamos el buffer
 		try {
@@ -54,8 +59,42 @@ public class Ejercicio7 {
 
 	}
 
-	private void option2() {
+	private void option2(Scanner sc) {
+		sc.nextLine();
+		System.out.println("Introduce la ruta del directorio a comprimir");
+		String dir = sc.nextLine();
+		System.out.println("Introduce el nombre del fichero zip");
+		String nombre = sc.nextLine();
+		if (!nombre.contains(".zip")) {
+			nombre = nombre + ".zip";
+		}
+		
+		try {
+			ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(dir+"/"+nombre));
+			zos.setLevel(Deflater.DEFAULT_COMPRESSION);
+			zos.setMethod(Deflater.DEFLATED);
 
+			ZipEntry entrada = new ZipEntry(nombre);
+			zos.putNextEntry(entrada);
+			File f = new File(dir);
+			List<File> listaFicheros = Ejercicio6.listarDirectorios(f);
+			FileInputStream fis = null;
+			for (File archivo : listaFicheros) {
+				fis = new FileInputStream(archivo.getAbsolutePath());
+				byte buffer[]= new byte[1024];
+				int leido = 0;
+				while(0<(leido = fis.read(buffer))) {
+					zos.write(buffer, 0, leido);
+				}
+			}
+			fis.close();
+			zos.closeEntry();
+			zos.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void printMenu() {
