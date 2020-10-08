@@ -7,7 +7,7 @@ public class Ejercicio6 {
 	
 	public void menu6(String path) {
 		File f = new File(path);
-		List<File> lista = treeCommand(f);
+		List<File> lista = listarDirectorios(f);
 
 		for (File file : lista) {
 			System.out.println(file.getName());
@@ -15,7 +15,7 @@ public class Ejercicio6 {
 	}
 
 	
-	private List<File> treeCommand(File directorio) {
+	public static List<File> listarDirectorios(File directorio) {
 
 		List<File> listFicheros = new ArrayList<File>();
 		// si el directorio que hemos marcado no existe o no tiene contenido retornamos
@@ -32,7 +32,7 @@ public class Ejercicio6 {
 				listFicheros.add(fichero);
 			} else {
 				//si no es fichero
-				listFicheros.addAll(treeCommand(fichero));
+				listFicheros.addAll(listarDirectorios(fichero));
 			}
 
 		}

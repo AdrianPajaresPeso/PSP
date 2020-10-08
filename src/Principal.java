@@ -22,8 +22,11 @@ public class Principal {
 
 		
 		Ejercicio6 e6 = new Ejercicio6();
-		e6.menu6("/Users/Adrian/Desktop/Juegos");
-
+//		e6.menu6("/Users/Adrian/Desktop/Juegos");
+		
+		Ejercicio7 e7 = new Ejercicio7();
+		e7.menu7();
+		
 		
 
 		

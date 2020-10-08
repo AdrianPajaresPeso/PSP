@@ -4,11 +4,17 @@ import java.text.SimpleDateFormat;
 public class Ejercicio3 {
 	public void listDirectory(String ruta) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		File directory = new File(ruta);
+		
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		System.out.println("Nombre\t\t\t\tTamaño\t\tUltima Modificacion\t\tRuta\t\t\t\tTipo");
 		System.out.println(
 				"-----------------------------------------------------------------------------------------------------------------------------------------");
+		
+		
+		
 		for (File elementos : directory.listFiles()) {
 
 			if (elementos.isDirectory()) {
