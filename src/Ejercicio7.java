@@ -35,7 +35,11 @@ public class Ejercicio7 {
 	private void option1(Scanner sc) {
 		sc.nextLine();// limpiamos el buffer
 		try {
+			
 			File f = new File(sc.nextLine());
+			if(!f.exists()) {
+				System.out.println("No existe el archivo que has seleccionado");
+			}
 			ZipInputStream zis = new ZipInputStream(new FileInputStream(f));
 			ZipEntry ze = null;
 
@@ -46,7 +50,7 @@ public class Ejercicio7 {
 			zis.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
