@@ -10,8 +10,13 @@ public class Ejercicio2 {
 
 	public void copiarFichero(String ruta) {
 		try {
+
+			
 			DataInputStream dis = new DataInputStream(new FileInputStream(ruta));
 
+			if(!ruta.contains(".txt")) {
+				ruta = ruta+".txt";
+			}
 			Integer posExtension = ruta.indexOf(".");// obtenemos la posicion de la extension
 			String extension = ruta.substring(posExtension); // guardamos la extension
 			String fileName = ruta.substring(0, posExtension); // guardamos el nombre

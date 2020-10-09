@@ -3,7 +3,9 @@ package ejercicio4;
 public class Principal {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		Ejercicio4 e = new Ejercicio4();
+		e.obtenerValorParametroProperties("saludo", "listaParametros.properties");
+		e.obtenerValorParametroStreams("saludo", "listaParametros.properties");
 
 	}
 
