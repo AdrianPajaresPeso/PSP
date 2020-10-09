@@ -2,6 +2,7 @@ package ejercicio7;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Ejercicio7 {
 				option2(sc);
 
 			} else if (input == 3) {
-				option3();
+				option3(sc);
 
 			} else {
 				break;
@@ -62,8 +63,31 @@ public class Ejercicio7 {
 		}
 	}
 
-	private void option3() {
+	private void option3(Scanner sc) {
+		sc.nextLine();
+		String path = sc.nextLine();
+		try {
 
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(path));
+
+			ZipEntry entrada;
+			while (null != (entrada = zis.getNextEntry())) {
+				System.out.println(entrada.getName());
+				FileOutputStream fos = new FileOutputStream(entrada.getName());
+				int leido;
+				byte[] buffer = new byte[1024];
+				while (0 < (leido = zis.read(buffer))) {
+					fos.write(buffer, 0, leido);
+				}
+				fos.close();
+				zis.closeEntry();
+
+			}
+			zis.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void option2(Scanner sc) {
@@ -149,9 +173,6 @@ public class Ejercicio7 {
 		System.out.println("\t3. Descomprimir un fichero .zip");
 		System.out.println("\t4. Salir.");
 
-		
 	}
-	
-	
 
 }
