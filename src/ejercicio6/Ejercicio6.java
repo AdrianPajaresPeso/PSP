@@ -11,32 +11,25 @@ public class Ejercicio6 {
 		List<File> lista = listarDirectorios(f);
 
 		for (File file : lista) {
-			System.out.println(file.getName());
+			System.out.println(file);
 		}
 	}
 
 	
 	public static List<File> listarDirectorios(File directorio) {
 
-		List<File> listFicheros = new ArrayList<File>();
-		// si el directorio que hemos marcado no existe o no tiene contenido retornamos
-		// directamente la lista de ficheros
-		if (directorio == null || directorio.listFiles() == null) {
-			return listFicheros;
-		}
+		ArrayList<File> listaFicheros = new ArrayList<>();
 
-		// recorremos el listado de ficheros del directorio pasado por parametro
-		for (File fichero : directorio.listFiles()) {
+        File[] contenido = directorio.listFiles();
 
-			//Si el elemento es un fichero lo añado a la lista de ficheros
-			if (fichero.isFile()) {
-				listFicheros.add(fichero);
-			} else {
-				//si no es fichero
-				listFicheros.addAll(listarDirectorios(fichero));
-			}
+        for (File file : contenido) {
+            if (file.isDirectory()) {
+                listaFicheros.addAll(listarDirectorios(file));
+            } else {
+                listaFicheros.add(file);
+            }
+        }
 
-		}
-		return listFicheros;
+        return listaFicheros;
 	}
 }

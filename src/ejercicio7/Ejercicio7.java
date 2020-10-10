@@ -2,9 +2,11 @@ package ejercicio7;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.zip.Deflater;
@@ -15,6 +17,9 @@ import java.util.zip.ZipOutputStream;
 import ejercicio6.Ejercicio6;
 
 public class Ejercicio7 {
+
+	HashSet<File> hsFile;
+
 	public void menu7() {
 		Scanner sc = new Scanner(System.in);
 		while (true) {
@@ -22,10 +27,10 @@ public class Ejercicio7 {
 
 			int input = sc.nextInt();
 			if (input == 1) {
-				option1(sc);
+				listarZip(sc);
 
 			} else if (input == 2) {
-				option2(sc);
+				comprimirDirectorio(sc);
 
 			} else if (input == 3) {
 				option3(sc);
@@ -40,12 +45,15 @@ public class Ejercicio7 {
 	/**
 	 * Lista el contenido de un fichero zip
 	 */
-	private void option1(Scanner sc) {
+	private void listarZip(Scanner sc) {
 		sc.nextLine();// limpiamos el buffer
 		System.out.println("Introduce la ruta del archivo zip que quieres mostrar");
 		try {
-
-			File f = new File(sc.nextLine());
+			String path = sc.nextLine();
+			if (!path.contains(".zip")) {
+				path = path + ".zip";
+			}
+			File f = new File(path);
 			if (!f.exists()) {
 				System.out.println("No existe el archivo que has seleccionado");
 			}
@@ -63,34 +71,103 @@ public class Ejercicio7 {
 		}
 	}
 
+	/**
+	 * Descomprime el fichero zip
+	 */
 	private void option3(Scanner sc) {
 		sc.nextLine();
+		System.out.println("Escribe el nombre del fichero zip a descomprimir:");
 		String path = sc.nextLine();
+		String rutaPadre = "";
+		// si el archivo introducido no tiene zip, lo guardamos como ruta
+		// y le ponemos .zip para poder extraerlo
+		if (!path.contains(".zip")) {
+			rutaPadre = path + "\\";
+			path = path + ".zip";
+		}
+
 		try {
 
 			ZipInputStream zis = new ZipInputStream(new FileInputStream(path));
 
 			ZipEntry entrada;
+
 			while (null != (entrada = zis.getNextEntry())) {
-				System.out.println(entrada.getName());
-				FileOutputStream fos = new FileOutputStream(entrada.getName());
-				int leido;
-				byte[] buffer = new byte[1024];
-				while (0 < (leido = zis.read(buffer))) {
-					fos.write(buffer, 0, leido);
+
+				System.out.println(entrada);
+				System.out.println("Descomprimiendo...");
+				//crea el primer directorio para ir extrayendo los archivos
+				if (entrada.isDirectory()) {
+					File f = new File(rutaPadre + entrada);
+					f.mkdirs();
+				} else {
+
+					File dir = new File(rutaPadre + entrada.getName());
+
+					hsFile = comprobarDirectorios(dir, rutaPadre.substring(0, rutaPadre.indexOf("\\")));
+					ArrayList<File> alistFile = new ArrayList<File>();
+					alistFile.addAll(hsFile);
+
+					Collections.sort(alistFile);
+					for (File file : alistFile) {
+						if (!file.exists()) {
+							file.mkdirs();
+						}
+					}
+					FileOutputStream fos = new FileOutputStream(rutaPadre + entrada.getName());
+					int leido;
+					byte[] buffer = new byte[1024];
+					while (0 < (leido = zis.read(buffer))) {
+						fos.write(buffer, 0, leido);
+					}
+					fos.close();
+					zis.closeEntry();
 				}
-				fos.close();
 				zis.closeEntry();
 
 			}
 			zis.close();
+			removeHashSet();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
-	private void option2(Scanner sc) {
+	/**
+	 * elimina todas las rutas para la siguiente descompresión
+	 * 
+	 */
+	private void removeHashSet() {
+		for (File file : hsFile) {
+			hsFile.remove(file);
+		}
+	}
+
+	/**
+	 * metodo recursivo que saca las rutas de los directorios padres este metodo
+	 * arregla un fallo con el listado de archivos a la hora de comprimir
+	 */
+	private HashSet<File> comprobarDirectorios(File rutas, String parent) {
+		HashSet<File> setFiles = new HashSet<>();
+		// si rutas es diferente de null pasa
+		if (rutas != null) {
+
+			// si rutas es igual al directorio padre pasado por teclado
+			if (!rutas.getPath().equals(parent)) {
+				File f = new File(rutas.getParent());
+				setFiles.add(f);
+				comprobarDirectorios(f, parent);
+			}
+
+		}
+
+		return setFiles;
+	}
+
+	/**
+	 * metodo de compresion de archivos
+	 */
+	private void comprimirDirectorio(Scanner sc) {
 		sc.nextLine();// limpiamos el buffer de entrada
 
 		// pedimos la ruta que queremos comprimir
@@ -105,67 +182,61 @@ public class Ejercicio7 {
 		if (!nombre.contains(".zip")) {
 			nombre = nombre + ".zip";
 		}
-		ZipOutputStream zos = null;
-		FileInputStream fis = null;
-		try {
-			File fileDir = new File(dir);
-			zos = new ZipOutputStream(new FileOutputStream(nombre));
 
-			zos.setLevel(Deflater.DEFAULT_COMPRESSION);
-			zos.setMethod(Deflater.DEFLATED);
+		File f = new File(dir);
+		// si el fichero no existe volvemos al menu
+		if (!f.exists()) {
+			System.out.println("No se encuentra el directorio");
+		} else {
 
-			List<File> array = Ejercicio6.listarDirectorios(fileDir);
-
-			for (File archivo : array) {
-
-				/** Estructura que se repetira en caso de añadir varios ficheros **/
-
-				ZipEntry entrada = new ZipEntry(archivo.getPath());
-				zos.putNextEntry(entrada);
-
-				fis = new FileInputStream(archivo.getPath());
-				byte[] buffer = new byte[1024];
-				int leido = 0;
-				while (0 < (leido = fis.read(buffer))) {
-					zos.write(buffer, 0, leido);
-				}
-
-			}
-
-			zos.closeEntry();
-			fis.close();
-			zos.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-		} finally {
+			ZipOutputStream zos = null;
+			FileInputStream fis = null;
 			try {
+				File fileDir = new File(dir);
+				zos = new ZipOutputStream(new FileOutputStream(nombre));
+
+				// establecemos el nivel de compresion
+				zos.setLevel(Deflater.DEFAULT_COMPRESSION);
+				zos.setMethod(Deflater.DEFLATED);
+
+				/**
+				 * ¡¡¡CUIDADO!!! En este sitio se almacena un listado de TODOS LOS ARCHIVOS PERO
+				 * NO DE LOS DIRECTORIOS Esto es un error que se solucionará en la descompresión
+				 * 
+				 **/
+				List<File> array = Ejercicio6.listarDirectorios(fileDir);
+				for (File archivo : array) {
+					System.out.println(archivo.getPath());
+					/** Estructura que se repetira en caso de añadir varios ficheros **/
+
+					ZipEntry entrada = new ZipEntry(archivo.getPath());
+					zos.putNextEntry(entrada);
+
+					fis = new FileInputStream(archivo.getPath());
+					byte[] buffer = new byte[1024];
+					int leido = 0;
+					while (0 < (leido = fis.read(buffer))) {
+						zos.write(buffer, 0, leido);
+					}
+
+				}
 
 				zos.closeEntry();
 				fis.close();
 				zos.close();
 
-			} catch (Exception e2) {
-				// TODO: handle exception
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
 			}
 		}
 	}
 
-	private Boolean existeZip(File dir, String nombre) {
-		Boolean flag = false;
-		List<File> listaArchivos = Ejercicio6.listarDirectorios(dir);
-
-		for (File file : listaArchivos) {
-			if (file.getName().equals(nombre)) {
-				flag = true;
-			}
-		}
-
-		return flag;
-	}
-
+	/**
+	 * Contiene la UI de consola
+	 * 
+	 */
 	private void printMenu() {
 		System.out.println("Seleccione una opción");
 		System.out.println("\t1. Mostrar contenido zip.");
