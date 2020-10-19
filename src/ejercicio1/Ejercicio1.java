@@ -2,36 +2,48 @@ package ejercicio1;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ejercicio1 {
 
 	public void nslookupCommand(String url) {
-		
-		//si es IPv4 pasa
+
+		// si es IPv4 pasa
 		if (isIPv4(url)) {
-			//si es válida pasa
-			if(isValidIP(url)) {
-				
+			// si es válida pasa
+			if (isValidIP(url)) {
+				nslookupIp(url);
 			}
-			
+
 		} else {
-			//si no es IPv4 es nombre de dominio
+			// si no es IPv4 es nombre de dominio
 			nslookupName(url);
-			
+
 		}
 
+	}
+
+	private void nslookupIp(String IP) {
+		// TODO Auto-generated method stub
+		InetAddress ia;
+		try {
+			ia = InetAddress.getByName(IP);
+			System.out.println("Address: " + ia.getHostAddress());
+			System.out.println("Server: " + ia.getHostName());
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	private void nslookupName(String url) {
 		InetAddress ia;
 		try {
 			ia = InetAddress.getByName(url);
-			System.out.println(ia.getHostAddress());
-			System.out.println(ia.getHostName());
-			System.out.println(ia.getCanonicalHostName());
-			for (byte iterable_element : ia.getAddress()) {
-				System.out.println(iterable_element);
-			}
+			System.out.println("Name: " + ia.getHostName());
+			System.out.println("Address: " + ia.getHostAddress());
+			System.out.println("Server: " + ia.getCanonicalHostName());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,7 +63,7 @@ public class Ejercicio1 {
 				break;
 			}
 		}
-		
+
 		return flag;
 	}
 
