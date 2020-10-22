@@ -13,12 +13,36 @@ public class Ejercicio4 {
 	
 	
 	public void generateQR() {
-		String inputs[] = input();
+
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Mensaje que quieras usar para crear el codigo QR");
+		String msg = sc.nextLine();
 		
+		//controlar espacios de la url
+		if(msg.contains(" ")) {
+			msg = msg.replace(" ", "+");
+		}
+		
+		System.out.println("Nombre del fichero QR: ");
+		String nameQR = sc.nextLine();
+		
+		//controlar tipo de imagen que tenemos
+		if(!nameQR.contains(".jpg") || !nameQR.contains(".png") || !nameQR.contains(".svg") || !nameQR.contains(".gif") || !nameQR.contains(".eps")) {
+			nameQR += ".jpg";
+		}
+		
+		
+		generatedQR(msg, nameQR);
+		
+		
+		
+	}
+
+	public static void generatedQR(String name, String docname) {
 		try {
-			URL link = new URL("https://api.qrserver.com/v1/create-qr-code/?data="+inputs[0]+"&format=jpg&color=255-0-0&size=1000x1000");
+			URL link = new URL("https://api.qrserver.com/v1/create-qr-code/?data="+name+"&format=jpg&color=255-0-0&size=1000x1000");
 			DataInputStream dis = new DataInputStream(link.openStream());
-			DataOutputStream dos = new DataOutputStream(new FileOutputStream(inputs[1]));
+			DataOutputStream dos = new DataOutputStream(new FileOutputStream(docname));
 			
 			
 			//generamos el fichero
@@ -40,29 +64,7 @@ public class Ejercicio4 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 
-	private String[] input() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Mensaje que quieras usar para crear el codigo QR");
-		String msg = sc.nextLine();
-		
-		//controlar espacios de la url
-		if(msg.contains(" ")) {
-			msg = msg.replace(" ", "+");
-		}
-		
-		System.out.println("Nombre del fichero QR: ");
-		String nameQR = sc.nextLine();
-		
-		//controlar tipo de imagen que tenemos
-		if(!nameQR.contains(".jpg")) {
-			nameQR += ".jpg";
-		}
-		String returned[] = {msg, nameQR};
-		return returned;
-	}
+	
 }
