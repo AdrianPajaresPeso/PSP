@@ -10,6 +10,9 @@ import java.util.Scanner;
 
 public class Ejercicio6 {
 
+	/**
+	 * Busca y registra los pokemon que le digas
+	 * */
 	public void searchPoketMonster() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("¿Que Pokemon quieres capturar? Dinos su nombre:");
@@ -37,11 +40,15 @@ public class Ejercicio6 {
 			System.out.println("¡Pokémon capturado!");
 		} catch ( IOException e) {
 			// TODO Auto-generated catch block
+			//si el pokemon no existe en la pagina y no podemos sacar info volvemos a empezar
 			System.out.println("Lo sentimos, el pokemon solicitado no se encuentra o no existe");
 			searchPoketMonster();
 		}
 	}
 
+	/**
+	 * Este metodo solo crea una pequeña "interfaz" o historia para hacer mas ameno el ejercicio
+	 * */
 	private void printStory() {
 		// TODO Auto-generated method stub
 		try {
