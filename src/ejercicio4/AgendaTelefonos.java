@@ -14,4 +14,7 @@ public class AgendaTelefonos {
 	public String getTfno(String nombre) {
 		return (String) agenda.get(nombre);
 	}
+	public Integer size () {
+		return agenda.size();
+	}
 }

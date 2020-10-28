@@ -9,31 +9,50 @@ import java.net.Socket;
 
 public class Server {
 
+	/**
+	 * Lleva a cabo la funcionalidad del comando GET
+	 * */
 	private static String commandGET(String comand) {
 
 		AgendaTelefonos at = new AgendaTelefonos();
-		String name = comand.replace("GET", "");
+		String name = comand.replace("GET ", "");
 		String cadenaRetorno = "No hay telefono asociado al nombre ";
-		if (name.charAt(0) == ' ') {
-			if (at.getTfno(name) == null) {
-				cadenaRetorno += name;
-			} else {
-				name = name.substring(1);
-				cadenaRetorno = at.getTfno(name);
-			}
-
+		if (at.getTfno(name) == null) {
+			cadenaRetorno += name;
 		} else {
-			if (at.getTfno(name) == null) {
-				cadenaRetorno += name;
-			} else {
-				cadenaRetorno = at.getTfno(name);
-			}
+			cadenaRetorno = at.getTfno(name);
 		}
+
 		return cadenaRetorno;
 	}
 
-	private static void commandPOST(String command) {
+	/**
+	 * Lleva a cabo la funcionalidad del comando POST
+	 * @return true, si se ha añadido correctamente el numero de telefono</br>
+	 * false, si el numero no se ha podido añadir o ya existía
+	 * */
+	private static Boolean commandPOST(String command) {
+		boolean flag = false;
+		AgendaTelefonos at = new AgendaTelefonos();
+		
+		//numero de telefonos almacenados en la agenda
+		int antes = at.size();
+		
+		String aux = command.replace("POST ", "");
+		if(aux.contains(" ")) {
+			String data[] = aux.split(" ");
+			String name = data[0];
+			String numero = data[1];
+			at.anadeTfno(name, numero);
+			int despues = at.size();
+			if (antes < despues) {
+				flag = true;
+			}
+		}
+		
+		
 
+		return flag;
 	}
 
 	public static void main(String[] args) {
@@ -49,15 +68,19 @@ public class Server {
 
 				BufferedReader br = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 				String command = br.readLine();
-				System.out.println("datos recividos " + command);
-				
+				System.out.println("datos recibidos " + command);
+
 				PrintStream ps = new PrintStream(cliente.getOutputStream());
 				if (command.contains("GET")) {
 
 					ps.println(commandGET(command));
 				} else if (command.contains("POST")) {
-					commandPOST(command);
-					ps.println("se ha añadido correctamente");
+					if (commandPOST(command)) {
+						ps.println("Se ha añadido correctamente");
+					} else {
+						ps.println("No se ha añadido correctamente, los datos son no son válidos, o este numero ya existía");
+					}
+
 				} else {
 					ps.println("El comando no se ha podido interpretar\n");
 				}
