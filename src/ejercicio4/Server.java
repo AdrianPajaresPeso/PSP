@@ -8,19 +8,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-
+	private static AgendaTelefonos at = new AgendaTelefonos();
 	/**
 	 * Lleva a cabo la funcionalidad del comando GET
 	 * */
 	private static String commandGET(String comand) {
 
-		AgendaTelefonos at = new AgendaTelefonos();
+		
 		String name = comand.replace("GET ", "");
+		String name2 = name.replace("\n", "");
 		String cadenaRetorno = "No hay telefono asociado al nombre ";
-		if (at.getTfno(name) == null) {
-			cadenaRetorno += name;
+		if (at.getTfno(name2) == null) {
+			cadenaRetorno += name2;
 		} else {
-			cadenaRetorno = at.getTfno(name);
+			cadenaRetorno = at.getTfno(name2);
 		}
 
 		return cadenaRetorno;
@@ -33,7 +34,7 @@ public class Server {
 	 * */
 	private static Boolean commandPOST(String command) {
 		boolean flag = false;
-		AgendaTelefonos at = new AgendaTelefonos();
+		
 		
 		//numero de telefonos almacenados en la agenda
 		int antes = at.size();
