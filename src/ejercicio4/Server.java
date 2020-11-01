@@ -8,17 +8,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-
+	private static AgendaTelefonos at = new AgendaTelefonos();
 	/**
 	 * Lleva a cabo la funcionalidad del comando GET
 	 * */
 	private static String commandGET(String comand) {
 
-		AgendaTelefonos at = new AgendaTelefonos();
+		
 		String name = comand.replace("GET ", "");
+		String name2 = name.replace("\n", "");
 		String cadenaRetorno = "No hay telefono asociado al nombre ";
-		if (at.getTfno(name) == null) {
-			cadenaRetorno += name;
+		if (at.getTfno(name2) == null) {
+			cadenaRetorno += name2;
 		} else {
 			cadenaRetorno = at.getTfno(name);
 			
@@ -31,12 +32,12 @@ public class Server {
 
 	/**
 	 * Lleva a cabo la funcionalidad del comando POST
-	 * @return true, si se ha añadido correctamente el numero de telefono</br>
-	 * false, si el numero no se ha podido añadir o ya existía
+	 * @return true, si se ha aï¿½adido correctamente el numero de telefono</br>
+	 * false, si el numero no se ha podido aï¿½adir o ya existï¿½a
 	 * */
 	private static Boolean commandPOST(String command) {
 		boolean flag = false;
-		AgendaTelefonos at = new AgendaTelefonos();
+		
 		
 		//numero de telefonos almacenados en la agenda
 		int antes = at.size();
@@ -79,9 +80,9 @@ public class Server {
 					ps.println(commandGET(command));
 				} else if (command.contains("POST")) {
 					if (commandPOST(command)) {
-						ps.println("Se ha añadido correctamente");
+						ps.println("Se ha aï¿½adido correctamente");
 					} else {
-						ps.println("No se ha añadido correctamente, los datos son no son válidos, o este numero ya existía");
+						ps.println("No se ha aï¿½adido correctamente, los datos son no son vï¿½lidos, o este numero ya existï¿½a");
 					}
 
 				} else {
