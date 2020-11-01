@@ -9,12 +9,21 @@ import java.net.Socket;
 
 public class Server {
 	private static AgendaTelefonos at = new AgendaTelefonos();
+
 	/**
-	 * Lleva a cabo la funcionalidad del comando GET
-	 * */
+	 * 
+	 * Metodo que tiene la funcionalidad del comando GET, el cual obtiene y devuelve
+	 * como un string el numero de telefono que se ha almacenado en la agenda
+	 * telefonica
+	 * 
+	 * @param comand variable de tipo String, que pasa el comando a realizar, este
+	 *               será tratado para obtener la informacion
+	 * @return cadenaRetorno, variable de tipo string que almacena el mensaje del
+	 *         resultado del comando si el comando consigue un dato, mandará un
+	 *         nombre
+	 */
 	private static String commandGET(String comand) {
 
-		
 		String name = comand.replace("GET ", "");
 		String name2 = name.replace("\n", "");
 		String cadenaRetorno = "No hay telefono asociado al nombre ";
@@ -22,9 +31,7 @@ public class Server {
 			cadenaRetorno += name2;
 		} else {
 			cadenaRetorno = at.getTfno(name);
-			
-			
-			
+
 		}
 
 		return cadenaRetorno;
@@ -32,34 +39,40 @@ public class Server {
 
 	/**
 	 * Lleva a cabo la funcionalidad del comando POST
-	 * @return true, si se ha aï¿½adido correctamente el numero de telefono</br>
-	 * false, si el numero no se ha podido aï¿½adir o ya existï¿½a
-	 * */
+	 * 
+	 * @return true, si se ha añadido correctamente el numero de telefono</br>
+	 *         false, si el numero no se ha podido añadir o ya existía
+	 */
 	private static Boolean commandPOST(String command) {
 		boolean flag = false;
-		
-		
-		//numero de telefonos almacenados en la agenda
+
+		// numero de telefonos almacenados en la agenda
 		int antes = at.size();
-		
+
 		String aux = command.replace("POST ", "");
-		if(aux.contains(" ")) {
+		if (aux.contains(" ")) {
 			String data[] = aux.split(" ");
 			String name = data[0];
 			String numero = data[1];
 			at.anadeTfno(name, numero);
+
+			// esta función ha sido añadida a mano en la clase para poder llevar a cabo la
+			// comprobación
 			int despues = at.size();
 			if (antes < despues) {
 				flag = true;
 			}
 		}
-		
-		
 
 		return flag;
 	}
 
-	public static void main(String[] args) {
+	/**
+	 * Método del cual cuelgan todos los demás, aqui se interpreta el comando y se
+	 * pone en marcha el servidor en funcion del comando se ejecutarán unos métodos
+	 * u otros.
+	 */
+	public static void startServer() {
 		// TODO Auto-generated method stub
 		try {
 			ServerSocket servidor = new ServerSocket(6000);
@@ -75,17 +88,26 @@ public class Server {
 				System.out.println("datos recibidos " + command);
 
 				PrintStream ps = new PrintStream(cliente.getOutputStream());
+				// si el comando contiene la palabra GET
 				if (command.contains("GET")) {
-
+					// ejecutaremos el metodo que tiene la funcionalidad del GET
 					ps.println(commandGET(command));
+
+					// si el comando contiene la palabra POST
 				} else if (command.contains("POST")) {
+
+					// si el comando se ejecuta correctamente se pasará al cliente la cadena de
+					// confirmación de que se ha añadido correctamente el numero a la agenda
 					if (commandPOST(command)) {
-						ps.println("Se ha aï¿½adido correctamente");
+						ps.println("Se ha añadido correctamente");
 					} else {
-						ps.println("No se ha aï¿½adido correctamente, los datos son no son vï¿½lidos, o este numero ya existï¿½a");
+						ps.println(
+								"No se ha añadido correctamente, los datos son no son válidos, o este numero ya existía");
 					}
 
 				} else {
+					// si el comando no tiene ninguna palabra clave se le envia el mensaje al
+					// cliente
 					ps.println("El comando no se ha podido interpretar\n");
 				}
 
@@ -95,6 +117,10 @@ public class Server {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void main(String[] args) {
+		startServer();
 	}
 
 }
